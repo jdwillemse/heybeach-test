@@ -31,7 +31,7 @@ class InputComponent extends React.Component {
   };
 
   render() {
-    const { label, name, type, props } = this.props;
+    const { label, name, type, ...props } = this.props;
     const value = this.state[name];
 
     return (
@@ -44,6 +44,7 @@ class InputComponent extends React.Component {
           name={name}
           onChange={this.handleInput}
           value={value}
+          required
         />
       </Fieldset>
     );

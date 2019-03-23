@@ -33,10 +33,12 @@ class HeaderComponent extends React.Component {
     event.preventDefault();
     // console.log('handleSubmit', this.submitAction, this.formData);
 
-    this.submitAction(this.formData);
-    delete this.submitAction;
+    if (event.target.checkValidity() === true) {
+      this.submitAction(this.formData);
+      delete this.submitAction;
 
-    this.setState({ showForm: false });
+      this.setState({ showForm: false });
+    }
   };
 
   render() {
@@ -98,9 +100,10 @@ class HeaderComponent extends React.Component {
             <Input
               label="Password"
               name="password"
+              minLength="6"
               onChange={this.handleInput}
             />
-            <Button>Submit</Button>
+            <Button type="submit">Submit</Button>
           </form>
         </FormWrap>
       </Header>
