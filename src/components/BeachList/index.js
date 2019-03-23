@@ -12,7 +12,7 @@ class BeachListComponent extends Component {
     return (
       <List>
         {this.props.beaches.map(beach => (
-          <BeachItem {...beach} />
+          <BeachItem {...beach} key={beach._id} />
         ))}
       </List>
     );

@@ -2,9 +2,11 @@ import { combineReducers, createStore, compose, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 
 import beaches from '../ducks/beaches';
+import user from '../ducks/user';
 
 const reducers = combineReducers({
-  beaches
+  beaches,
+  user
 });
 
 /**
