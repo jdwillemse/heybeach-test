@@ -1,22 +1,18 @@
 import { connect } from 'react-redux';
 
-import { register, logIn, logOut, checkSession } from '../ducks/user';
 import { openForm } from '../ducks/form';
-import Header from '../components/Header';
+import Form from '../components/Form';
 
 const mapStateToProps = state => ({
-  ...state.user
+  ...state.form,
+  error: state.user.error
 });
 
 const mapDispatchToProps = {
-  register,
-  logIn,
-  logOut,
-  checkSession,
   openForm
 };
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Header);
+)(Form);

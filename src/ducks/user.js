@@ -20,6 +20,7 @@ export const initialState = {
   isFetching: false,
   isValid: false,
   isLoggedIn: false,
+  canCloseForm: false,
   user: null
 };
 
@@ -32,7 +33,9 @@ export default (state = initialState, action) => {
     case LOGOUT:
       return {
         ...state,
-        isFetching: true
+        isFetching: true,
+        canCloseForm: false,
+        error: null
       };
 
     case REGISTER_SUCCESS:
@@ -42,6 +45,8 @@ export default (state = initialState, action) => {
         isFetching: false,
         isValid: true,
         isLoggedIn: true,
+        canCloseForm: true,
+        error: null,
         ...action.payload
       };
 
@@ -51,6 +56,7 @@ export default (state = initialState, action) => {
         isFetching: false,
         isValid: true,
         isLoggedIn: false,
+        canCloseForm: true,
         user: null
       };
 
@@ -61,7 +67,12 @@ export default (state = initialState, action) => {
         ...state,
         isFetching: false,
         isValid: false,
-        error: action.error
+        canCloseForm: false,
+        error:
+          action.error.errmsg ||
+          Object.values(action.error.errors)
+            .map(({ message }) => message)
+            .join(', ')
       };
 
     case SESSION:
@@ -139,7 +150,7 @@ export const register = (userData = {}) => dispatch => {
       console.log(error);
       return dispatch({
         type: REGISTER_FAIL,
-        error: error.errmsg
+        error
       });
     });
 
@@ -180,7 +191,7 @@ export const logIn = (userData = {}) => async dispatch => {
       console.log(error);
       return dispatch({
         type: LOGIN_FAIL,
-        error: error.errmsg
+        error
       });
     });
 

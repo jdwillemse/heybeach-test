@@ -22,11 +22,20 @@ export default (state = initialState, action) => {
       };
 
     case SUCCESS:
+      const beaches = [[], [], []];
+      // sort list so that once masonry layout is applied the order more or less reflects that of the original list
+      for (let i = 0; i < action.payload.length; i++) {
+        beaches[i % 3].push(action.payload[i]);
+      }
+
       return {
         ...state,
         isFetching: false,
         isValid: true,
-        beaches: action.payload
+        beaches: beaches.reduce(
+          (collection, item) => collection.concat(item),
+          []
+        )
       };
 
     case FAILURE:

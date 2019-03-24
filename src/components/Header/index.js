@@ -1,13 +1,10 @@
 import React from 'react';
 
-import { Header, FormWrap, ButtonWrap, Button } from './styles.js';
-import Input from '../Input';
+import { Header, Title, ButtonWrap } from './styles.js';
+import Logo from '../Logo';
+import Button from '../Button';
 
 class HeaderComponent extends React.Component {
-  state = {
-    showForm: false
-  };
-
   formData = {
     email: '',
     password: ''
@@ -17,48 +14,34 @@ class HeaderComponent extends React.Component {
     this.props.checkSession();
   }
 
-  handleInput = input => {
-    this.formData = {
-      ...this.formData,
-      ...input
-    };
-  };
-
-  toggleForm = submitAction => {
-    this.submitAction = submitAction;
-    this.setState({ showForm: true });
-  };
-
   handleSubmit = event => {
     event.preventDefault();
-    // console.log('handleSubmit', this.submitAction, this.formData);
 
     if (event.target.checkValidity() === true) {
       this.submitAction(this.formData);
-      delete this.submitAction;
-
-      this.setState({ showForm: false });
     }
   };
 
   render() {
-    const { isLoggedIn, user, error, isFetching, register, logIn } = this.props;
-    const { showForm } = this.state;
+    const {
+      isLoggedIn,
+      user,
+      isFetching,
+      register,
+      logIn,
+      openForm
+    } = this.props;
 
-    console.log(this.props);
+    // console.log(this.props);
 
     return (
       <Header>
-        {error && <h2>{error}</h2>}
-        <h1>{isLoggedIn ? `Hi, ${user}` : 'Welcome'}</h1>
+        <Logo />
+        {isLoggedIn && <Title>Hi, {user}</Title>}
 
-        <ButtonWrap leave={showForm}>
+        <ButtonWrap>
           {isLoggedIn ? (
-            <Button
-              onClick={this.props.logOut}
-              type="button"
-              disabled={isFetching}
-            >
+            <Button onClick={this.props.logOut} disabled={isFetching}>
               logout
             </Button>
           ) : (
@@ -67,9 +50,8 @@ class HeaderComponent extends React.Component {
                 onClick={() => {
                   // this.formData.email = `poops-${Date.now()}@xxxx.com`;
                   // this.formData.password = 'magicfactory';
-                  this.toggleForm(register);
+                  openForm(register);
                 }}
-                type="button"
                 disabled={isFetching}
               >
                 register
@@ -78,9 +60,8 @@ class HeaderComponent extends React.Component {
                 onClick={() => {
                   // this.formData.email = 'poops-1553339017510@xxxx.com';
                   // this.formData.password = 'magicfactory';
-                  this.toggleForm(logIn);
+                  openForm(logIn);
                 }}
-                type="button"
                 disabled={isFetching}
               >
                 login
@@ -88,24 +69,6 @@ class HeaderComponent extends React.Component {
             </React.Fragment>
           )}
         </ButtonWrap>
-
-        <FormWrap enter={showForm}>
-          <form onSubmit={this.handleSubmit}>
-            <Input
-              label="Email"
-              name="email"
-              type="email"
-              onChange={this.handleInput}
-            />
-            <Input
-              label="Password"
-              name="password"
-              minLength="6"
-              onChange={this.handleInput}
-            />
-            <Button type="submit">Submit</Button>
-          </form>
-        </FormWrap>
       </Header>
     );
   }

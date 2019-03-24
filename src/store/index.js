@@ -3,10 +3,12 @@ import thunk from 'redux-thunk';
 
 import beaches from '../ducks/beaches';
 import user from '../ducks/user';
+import form from '../ducks/form';
 
 const reducers = combineReducers({
   beaches,
-  user
+  user,
+  form
 });
 
 /**

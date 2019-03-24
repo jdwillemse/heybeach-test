@@ -9,6 +9,13 @@ class BeachListComponent extends Component {
   }
 
   render() {
+    const { beaches } = this.props;
+    const len = beaches.length;
+    const beachHolder = [[], [], []];
+    for (let i = 0; i <= len; i++) {
+      beachHolder[i % 3].push(i);
+    }
+
     return (
       <List>
         {this.props.beaches.map(beach => (

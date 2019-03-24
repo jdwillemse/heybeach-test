@@ -1,7 +1,17 @@
 import styled from 'styled-components/macro';
 
-export const List = styled.ul`
-  list-style: none;
-  margin: 0;
-  padding: 0;
+import { breakpoints } from '../../utils/variables';
+
+export const List = styled.div`
+  margin: 0 2rem;
+  columns: 1;
+  column-gap: 1rem;
+
+  @media (min-width: ${breakpoints.small}px) {
+    columns: 2;
+  }
+
+  @media (min-width: ${breakpoints.medium}px) {
+    columns: 3;
+  }
 `;
