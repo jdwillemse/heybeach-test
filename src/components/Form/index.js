@@ -24,19 +24,14 @@ class FormComponent extends React.Component {
 
   handleSubmit = event => {
     event.preventDefault();
-    // console.log('handleSubmit', this.submitAction, this.formData);
 
     if (event.target.checkValidity() === true) {
       this.props.submitAction(this.formData);
-
-      // this.setState({ showForm: false });
     }
   };
 
   render() {
     const { isFormOpen, error } = this.props;
-
-    console.log(this.props);
 
     return (
       <FormWrap>

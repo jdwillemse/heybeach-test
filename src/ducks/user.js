@@ -1,3 +1,5 @@
+import { startSession, getSession, clearSession } from '../utils/session';
+
 // Actions
 export const PREFIX = 'USER';
 export const REGISTER = `${PREFIX}/REGISTER`;
@@ -12,9 +14,6 @@ export const LOGOUT_FAIL = `${PREFIX}/LOGOUT_FAIL`;
 export const SESSION = `${PREFIX}/SESSION`;
 
 const ENDPOINT = 'http://techtest.lab1886.io:3000/user';
-// I arbitrarily chose 1 hour as the login session length
-const SESSION_DURATION = 60 * 60 * 100;
-const STORGE_KEY = 'authenticationSession';
 
 export const initialState = {
   isFetching: false,
@@ -26,7 +25,6 @@ export const initialState = {
 
 // Reducer
 export default (state = initialState, action) => {
-  console.log(action);
   switch (action.type) {
     case REGISTER:
     case LOGIN:
@@ -63,16 +61,16 @@ export default (state = initialState, action) => {
     case REGISTER_FAIL:
     case LOGIN_FAIL:
     case LOGOUT_FAIL:
+      // Login API returns 400 when validation fails which is unfortunate as this passes an ugly error to user
+      let error =
+        action.error.errmsg || action.error.message || 'Unknown error occured';
+
       return {
         ...state,
         isFetching: false,
         isValid: false,
         canCloseForm: false,
-        error:
-          action.error.errmsg ||
-          Object.values(action.error.errors)
-            .map(({ message }) => message)
-            .join(', ')
+        error
       };
 
     case SESSION:
@@ -86,39 +84,8 @@ export default (state = initialState, action) => {
   }
 };
 
-function startSession(email, token) {
-  const sessionData = {
-    email,
-    token,
-    expires: Date.now() + SESSION_DURATION
-  };
-  console.log({ sessionData });
-
-  sessionStorage.setItem(STORGE_KEY, JSON.stringify(sessionData));
-}
-
-function getSession() {
-  const storedSession = sessionStorage.getItem(STORGE_KEY);
-  let sessionData = {};
-  // console.log(storedSession);
-
-  if (!storedSession) {
-    return {};
-  }
-
-  sessionData = JSON.parse(storedSession);
-
-  return {
-    ...sessionData,
-    isLoggedIn: Date.now() > sessionData.expires
-  };
-}
-
 // Action factories
-
 export const register = (userData = {}) => dispatch => {
-  console.log({ userData });
-
   fetch(`${ENDPOINT}/register`, {
     method: 'POST',
     body: JSON.stringify(userData),
@@ -147,7 +114,6 @@ export const register = (userData = {}) => dispatch => {
       });
     })
     .catch(error => {
-      console.log(error);
       return dispatch({
         type: REGISTER_FAIL,
         error
@@ -158,8 +124,6 @@ export const register = (userData = {}) => dispatch => {
 };
 
 export const logIn = (userData = {}) => async dispatch => {
-  console.log({ userData });
-
   fetch(`${ENDPOINT}/login`, {
     method: 'POST',
     body: JSON.stringify(userData),
@@ -188,7 +152,6 @@ export const logIn = (userData = {}) => async dispatch => {
       });
     })
     .catch(error => {
-      console.log(error);
       return dispatch({
         type: LOGIN_FAIL,
         error
@@ -214,8 +177,7 @@ export const logOut = () => async dispatch => {
     }
   })
     .then(res => {
-      console.log(res);
-      sessionStorage.removeItem(STORGE_KEY);
+      clearSession();
 
       if (res.status !== 200) {
         throw res.statusText;
@@ -236,7 +198,6 @@ export const logOut = () => async dispatch => {
 
 export const checkSession = () => {
   const session = getSession();
-  console.log({ session });
 
   return {
     type: SESSION,

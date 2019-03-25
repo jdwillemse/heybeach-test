@@ -23,23 +23,14 @@ export default (state = initialState, action) => {
       };
 
     case SUCCESS:
-      // const beaches = [[], [], []];
-      const allBeaches = state.beaches.concat(action.payload);
-      // sort list so that once masonry layout is applied the order more or less reflects that of the original list
-      // for (let i = 0; i < action.payload.length; i++) {
-      //   beaches[i % 3].push(action.payload[i]);
-      // }
+      const beaches = state.beaches.concat(action.payload);
 
       return {
         ...state,
         isFetching: false,
         isValid: true,
         currentPage: state.currentPage + 1,
-        // beaches: beaches.reduce(
-        //   (collection, item) => collection.concat(item),
-        //   []
-        // )
-        beaches: allBeaches
+        beaches
       };
 
     case FAILURE:
