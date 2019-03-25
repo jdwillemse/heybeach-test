@@ -1,24 +1,41 @@
 import React, { Component } from 'react';
+import { Waypoint } from 'react-waypoint';
 
 import { List } from './styles.js';
 import BeachItem from '../BeachItem';
 
+const LAZYLOAD_OFFSET = 100;
+
 class BeachListComponent extends Component {
   componentDidMount() {
     this.props.fetchList();
+    setTimeout(this.scrollHandler, 500);
+
+    window.addEventListener('scroll', this.scrollHandler);
   }
 
-  render() {
-    const { beaches } = this.props;
-    const len = beaches.length;
-    const beachHolder = [[], [], []];
-    for (let i = 0; i <= len; i++) {
-      beachHolder[i % 3].push(i);
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.scrollHandler);
+  }
+
+  scrollHandler = () => {
+    const { scrollTop } = document.documentElement;
+    const lazyloadTarget =
+      document.documentElement.scrollHeight -
+      window.innerHeight -
+      LAZYLOAD_OFFSET;
+
+    if (scrollTop >= lazyloadTarget || lazyloadTarget <= 0) {
+      this.props.fetchList();
     }
+  };
+
+  render() {
+    const { beaches, fetchList, currentPage } = this.props;
 
     return (
       <List>
-        {this.props.beaches.map(beach => (
+        {beaches.map(beach => (
           <BeachItem {...beach} key={beach._id} />
         ))}
       </List>
