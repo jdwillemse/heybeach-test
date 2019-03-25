@@ -31,14 +31,17 @@ class BeachListComponent extends Component {
   };
 
   render() {
-    const { beaches, fetchList, currentPage } = this.props;
+    const { beaches, isFetching } = this.props;
 
     return (
-      <List>
-        {beaches.map(beach => (
-          <BeachItem {...beach} key={beach._id} />
-        ))}
-      </List>
+      <React.Fragment>
+        <List>
+          {beaches.map(beach => (
+            <BeachItem {...beach} key={beach._id} />
+          ))}
+        </List>
+        {isFetching && <div>Loading…</div>}
+      </React.Fragment>
     );
   }
 }
