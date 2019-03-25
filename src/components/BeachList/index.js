@@ -1,14 +1,20 @@
 import React, { Component } from 'react';
-import { Waypoint } from 'react-waypoint';
+import Masonry from 'react-masonry-component';
 
-import { List } from './styles.js';
+import { ListWrap } from './styles.js';
 import BeachItem from '../BeachItem';
 
 const LAZYLOAD_OFFSET = 100;
 
+const masonryOptions = {
+  transitionDuration: 0
+};
+
 class BeachListComponent extends Component {
   componentDidMount() {
     this.props.fetchList();
+    // quick hack to make sure the list actually reavhes the bottom of the page
+    // this should be done on masonry layout complete event
     setTimeout(this.scrollHandler, 500);
 
     window.addEventListener('scroll', this.scrollHandler);
@@ -34,14 +40,14 @@ class BeachListComponent extends Component {
     const { beaches, isFetching } = this.props;
 
     return (
-      <React.Fragment>
-        <List>
+      <ListWrap>
+        <Masonry options={masonryOptions}>
           {beaches.map(beach => (
             <BeachItem {...beach} key={beach._id} />
           ))}
-        </List>
+        </Masonry>
         {isFetching && <div>Loading…</div>}
-      </React.Fragment>
+      </ListWrap>
     );
   }
 }
